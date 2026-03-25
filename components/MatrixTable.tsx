@@ -66,21 +66,10 @@ export default function MatrixTable({ authors }: Props) {
                         />
                       )}
                       <span>{a.author}</span>
-                      {a.flag === "attention" && (
-                        <span className="text-xs bg-yellow-200 text-yellow-900 px-1 rounded">
-                          ⚠ needs attention
-                        </span>
-                      )}
-                      {a.flag === "above" && (
-                        <span className="text-xs bg-blue-200 text-blue-900 px-1 rounded">
-                          ↑ above avg
-                        </span>
-                      )}
-                      {a.flag === "below" && (
-                        <span className="text-xs bg-red-200 text-red-900 px-1 rounded">
-                          ↓ below avg
-                        </span>
-                      )}
+                      {a.flag === "attention"}
+                      {a.flag === "above" }
+                      {a.flag === "below"
+                      }
                     </div>
                   </th>
                 ))}
@@ -116,38 +105,26 @@ export default function MatrixTable({ authors }: Props) {
       {/* Metrics matrix */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="text-left p-2 border border-gray-200 w-40" />
-                {authors.map(a => (
-                  <th
-                    key={a.author}
-                    className="p-2 border border-gray-200 text-center font-medium text-gray-700"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <span>{a.author}</span> 
-                      {a.flag === "attention" && (
-                        <span className="text-xs bg-yellow-200 text-yellow-900 px-1 rounded">
-                          ⚠ needs attention
-                        </span>
-                      )}
-                      {a.flag === "above" && (
-                        <span className="text-xs bg-blue-200 text-blue-900 px-1 rounded">
-                          ↑ above avg
-                        </span>
-                      )}
-                      {a.flag === "below" && (
-                        <span className="text-xs bg-red-200 text-red-900 px-1 rounded">
-                          ↓ below avg
-                        </span>
-                      )}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="text-left p-2 border border-gray-200 w-40" />
+              {authors.map(a => (
+                <th
+                  key={a.author}
+                  className="p-2 border border-gray-200 text-center font-medium text-gray-700"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    {a.avatar && (
+                      <img src={a.avatar} alt={a.author} className="w-6 h-6 rounded-full" />
+                    )}
+                    <span>{a.author}</span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
             <tbody>
-              {METRICS.map(({ key, label }) => {
+            {METRICS.map(({ key, label }) => {
                 const values = authors.map(a => a[key])
                 return (
                   <tr key={key}>
@@ -157,6 +134,7 @@ export default function MatrixTable({ authors }: Props) {
                     {authors.map(a => {
                       const val = a[key]
                       const flag = a.flag !== "normal" ? a.flag : flagValue(val, values)
+                      console.log(a.author, "flag:", a.flag, "→", flag) 
                       return (
                         <td
                           key={a.author}
@@ -185,7 +163,7 @@ export default function MatrixTable({ authors }: Props) {
           </span>
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 rounded-sm bg-yellow-200 inline-block" />
-            Needs attention — no test contributions with 5+ commits, or abnormally large commits
+            Needs attention
           </span>
         </div>
       </div>
