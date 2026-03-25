@@ -127,7 +127,7 @@ npm run dev
 
 [gradegit-production.up.railway.app](https://gradegit-production.up.railway.app/)
 
-> Sign in with GitHub to analyse any public repository.
+> Sign in with GitHub to analyze any public repository.
 
 ## Limitations
 
