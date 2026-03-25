@@ -9,19 +9,19 @@ export default function HomePage() {
       <Header />
 
       {/* Hero */}
-      <section className="max-w-3xl mx-auto px-8 pt-28 pb-16 text-center">
-        <span className="inline-block text-xs text-gray-600 border border-gray-300 rounded-full px-3 py-1 mb-8 tracking-widest uppercase">
+      <section className="max-w-2xl mx-auto px-8 pt-24 pb-14 text-center">
+        <span className="inline-block text-xs text-gray-500 border border-gray-300 rounded-full px-3 py-1 mb-7 tracking-widest uppercase">
           Repository Analytics
         </span>
-        <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-6 text-gray-900">
+        <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-5 text-gray-900">
           See exactly who
           <br />
           <span className="text-emerald-600">built what.</span>
         </h1>
-        <p className="text-gray-500 text-base leading-relaxed mb-10 max-w-xl mx-auto">
-          Paste a GitHub repo URL. GradeGit breaks down every contributor's work
-          by type — code, tests, config, UI, docs, flags outliers automatically,
-          tracks file ownership, and surfaces issues and PR patterns.
+        <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-lg mx-auto">
+          Paste a GitHub repo URL and get an instant breakdown of every
+          contributor — who writes tests, who owns which files, who's carrying
+          the team, and who needs a closer look.
         </p>
         <button
           onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
@@ -34,9 +34,10 @@ export default function HomePage() {
         </button>
       </section>
 
-      {/* Mock preview — contribution matrix with flagging */}
+      {/* Mock preview */}
       <section className="max-w-4xl mx-auto px-8 pb-20">
         <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
+          {/* Browser chrome */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-gray-50">
             <div className="w-3 h-3 rounded-full bg-red-400" />
             <div className="w-3 h-3 rounded-full bg-yellow-400" />
@@ -47,12 +48,13 @@ export default function HomePage() {
               </span>
             </div>
           </div>
+
           <div className="p-6">
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-4 mb-6">
               {[
                 { label: "Total Commits", value: "247" },
-                { label: "Contributors", value: "8" },
+                { label: "Contributors", value: "5" },
                 { label: "Files Touched", value: "134" },
               ].map((s) => (
                 <div
@@ -67,7 +69,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Contribution type matrix */}
+            {/* Contribution matrix */}
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4">
               <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
                 Code &amp; Commit Contribution Matrix
@@ -77,10 +79,11 @@ export default function HomePage() {
                   <tr className="bg-gray-50">
                     <th className="text-left p-3 text-gray-400 font-normal w-36" />
                     {[
-                      { name: "b.roubos", flag: null },
-                      { name: "alex", flag: "🔵" },
-                      { name: "k.lorp", flag: null },
-                      { name: "t.s.min", flag: "🔴" },
+                      { name: "sarah", flags: "🔵" },
+                      { name: "marco", flags: "" },
+                      { name: "devon", flags: "🟡🔴" },
+                      { name: "priya", flags: "" },
+                      { name: "lee", flags: "🔴" },
                     ].map((a) => (
                       <th
                         key={a.name}
@@ -88,6 +91,11 @@ export default function HomePage() {
                       >
                         <div className="flex flex-col items-center gap-0.5">
                           <span>{a.name}</span>
+                          {a.flags && (
+                            <span className="text-sm leading-none">
+                              {a.flags}
+                            </span>
+                          )}
                         </div>
                       </th>
                     ))}
@@ -97,38 +105,41 @@ export default function HomePage() {
                   {[
                     {
                       label: "Code",
-                      values: ["2234", "3891", "1627", "90"],
+                      values: ["4821", "1203", "890", "654", "42"],
                       colors: [
-                        "",
                         "bg-blue-100 text-blue-800",
+                        "",
+                        "",
                         "",
                         "bg-red-100 text-red-800",
                       ],
                     },
                     {
                       label: "Tests",
-                      values: ["1402", "980", "107", "0"],
-                      colors: ["", "", "", "bg-red-100 text-red-800"],
-                    },
-                    {
-                      label: "Config",
-                      values: ["84", "120", "310", "12"],
-                      colors: ["", "", "", "bg-red-100 text-red-800"],
-                    },
-                    {
-                      label: "UI",
-                      values: ["430", "205", "88", "14"],
-                      colors: ["", "", "", "bg-red-100 text-red-800"],
-                    },
-                    {
-                      label: "Docs",
-                      values: ["16", "25", "14", "850"],
+                      values: ["1840", "420", "0", "280", "0"],
                       colors: [
+                        "bg-blue-100 text-blue-800",
+                        "",
                         "bg-red-100 text-red-800",
                         "",
                         "bg-red-100 text-red-800",
-                        "bg-blue-100 text-blue-800",
                       ],
+                    },
+                    {
+                      label: "Config",
+                      values: ["210", "88", "0", "44", "0"],
+                      colors: [
+                        "",
+                        "",
+                        "bg-red-100 text-red-800",
+                        "",
+                        "bg-red-100 text-red-800",
+                      ],
+                    },
+                    {
+                      label: "Avg lines/commit",
+                      values: ["61", "74", "530", "58", "42"],
+                      colors: ["", "", "bg-yellow-100 text-yellow-800", "", ""],
                     },
                   ].map((row) => (
                     <tr key={row.label} className="border-t border-gray-100">
@@ -152,17 +163,17 @@ export default function HomePage() {
             {/* Flag legend */}
             <div className="flex gap-5 text-xs text-gray-500 mb-4">
               <span className="flex items-center gap-1.5">
-                🔵 <span>Above average (&gt;2 std dev)</span>
+                🔵 <span>Carrying the team</span>
               </span>
               <span className="flex items-center gap-1.5">
-                🔴 <span>Below average (&lt;0.5 std dev)</span>
+                🔴 <span>Low contribution</span>
               </span>
               <span className="flex items-center gap-1.5">
-                🟡 <span>Needs attention (no tests, huge commits)</span>
+                🟡 <span>Needs review — large commits, no tests</span>
               </span>
             </div>
 
-            {/* File ownership preview */}
+            {/* File ownership */}
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
                 File Ownership
@@ -173,22 +184,22 @@ export default function HomePage() {
                     {
                       file: "lib/analyze.ts",
                       owners: [
-                        { name: "b.roubos", pct: 74 },
-                        { name: "alex", pct: 26 },
+                        { name: "sarah", pct: 74 },
+                        { name: "marco", pct: 26 },
                       ],
                     },
                     {
-                      file: "app/api/repo/analyze/route.ts",
+                      file: "app/api/route.ts",
                       owners: [
-                        { name: "k.lorp", pct: 58 },
-                        { name: "b.roubos", pct: 42 },
+                        { name: "devon", pct: 91 },
+                        { name: "sarah", pct: 9 },
                       ],
                     },
                     {
                       file: "README.md",
                       owners: [
-                        { name: "t.s.min", pct: 91 },
-                        { name: "b.roubos", pct: 9 },
+                        { name: "priya", pct: 88 },
+                        { name: "lee", pct: 12 },
                       ],
                     },
                   ].map((row) => (
@@ -218,45 +229,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What's in the dashboard */}
+      {/* What's in the dashboard — tighter, less jargon */}
       <section className="max-w-4xl mx-auto px-8 pb-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
           Everything in one dashboard
         </h2>
         <p className="text-gray-400 text-sm text-center mb-10">
-          Six panels, one URL. No setup beyond signing in.
+          Paste a URL. No setup, no tokens, no config.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             {
               num: "01",
-              title: "Contribution Types",
-              desc: "Stacked bar chart showing every contributor's lines changed by category — source code, tests, config, UI assets, and docs. See who writes tests and who doesn't at a glance.",
+              title: "Who writes what",
+              desc: "Stacked bars show each contributor's lines by category — code, tests, config, UI, docs. Instantly see who writes tests and who doesn't.",
             },
             {
               num: "02",
-              title: "Code & Commit Matrix",
-              desc: "Two colour-coded tables: one by contribution type (lines changed per category), one by total commits, total lines, and average lines per commit. Cells highlighted against the team mean.",
+              title: "Contribution matrix",
+              desc: "Color-coded tables break down every author by lines changed, commit count, and average commit size. Outliers are highlighted automatically.",
             },
             {
               num: "03",
-              title: "Issues & Pull Request Matrix",
-              desc: "Per-author breakdown of issues opened, closed, labelled, and milestoned, plus PR merge rates and self-merges. Only shows users who have at least one issue or PR.",
+              title: "Issues & pull requests",
+              desc: "Per-author breakdown of PRs opened, merged, and closed — plus how often they add labels, descriptions, and reviewers.",
             },
             {
               num: "04",
-              title: "Commit Timeline",
-              desc: "Daily commit distribution across the analysed history. Spot bursts of activity, quiet periods, and last-minute crunch patterns across the whole team.",
+              title: "Commit timeline",
+              desc: "Daily commit activity across the full history. Spot crunch periods, long quiet stretches, or a last-minute push before a deadline.",
             },
             {
               num: "05",
-              title: "File Ownership",
-              desc: "Top 30 files by lines changed with per-author ownership percentages. Find bus-factor risks and see who actually owns each part of the codebase.",
+              title: "File ownership",
+              desc: "Top 30 files by lines changed, with per-author percentages. Find files where one person owns 90%+ — your bus-factor risks.",
             },
             {
               num: "06",
-              title: "Heuristic Flagging",
-              desc: "Authors flagged automatically using mean ± std deviation: 🔵 well above average, 🔴 well below, 🟡 no test contributions with 5+ commits or unusually large commit sizes.",
+              title: "Automatic risk flags",
+              desc: "🔵 carrying the team · 🔴 low contribution · 🟡 needs review (huge commits, zero test coverage). Scaled to your team size.",
             },
           ].map((f) => (
             <div
@@ -273,36 +284,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Flagging explained */}
+      {/* Flagging explained — simpler */}
       <section className="max-w-4xl mx-auto px-8 pb-24">
         <div className="bg-white border border-gray-200 rounded-xl p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-1">
-            How flagging works
+            How flags work
           </h2>
           <p className="text-gray-400 text-sm mb-6">
-            Hard thresholds don't work across projects of different sizes.
-            GradeGit uses mean and standard deviation across the whole team, so
-            the same logic applies whether you have 2 contributors or 20.
+            A contributor can carry multiple flags — someone can be both
+            low-commit 🔴 and writing huge hard-to-review changes 🟡 at the same
+            time.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
                 flag: "🔵",
-                label: "Above average",
+                label: "Carrying the team",
                 bg: "bg-blue-50 border-blue-200",
-                desc: "Commit count is more than 2 standard deviations above the team mean. This contributor is carrying significantly more than their share of the work.",
+                desc: "Commit count is well above the team average. This person is doing a disproportionate share of the work.",
               },
               {
                 flag: "🔴",
-                label: "Below average",
+                label: "Low contribution",
                 bg: "bg-red-50 border-red-200",
-                desc: "Commit count is more than 0.5 standard deviations below the team mean. This contributor may be less engaged or could need support.",
+                desc: "Notably fewer commits than the rest of the team. Could mean they're blocked, less engaged, or working in a different branch.",
               },
               {
                 flag: "🟡",
-                label: "Needs attention",
+                label: "Needs review",
                 bg: "bg-yellow-50 border-yellow-200",
-                desc: "No test contributions despite 5+ commits (and above the line mean), or average lines per commit is more than 2 std deviations above the mean, a sign of large, hard-to-review changes.",
+                desc: "Commits are unusually large (hard to review), or this contributor has written significant code with zero test coverage.",
               },
             ].map((f) => (
               <div key={f.label} className={`border rounded-lg p-4 ${f.bg}`}>
