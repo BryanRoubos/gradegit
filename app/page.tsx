@@ -20,8 +20,8 @@ export default function HomePage() {
         </h1>
         <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-lg mx-auto">
           Paste a GitHub repo URL and get an instant breakdown of every
-          contributor — who writes tests, who owns which files, who's carrying
-          the team, and who needs a closer look.
+          contributor — who writes tests, who owns which files, who's
+          carrying the team, and who needs a closer look.
         </p>
         <button
           onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
@@ -57,14 +57,9 @@ export default function HomePage() {
                 { label: "Contributors", value: "5" },
                 { label: "Files Touched", value: "134" },
               ].map((s) => (
-                <div
-                  key={s.label}
-                  className="bg-gray-50 border border-gray-200 rounded-lg p-4"
-                >
+                <div key={s.label} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <p className="text-gray-400 text-xs mb-1">{s.label}</p>
-                  <p className="text-2xl font-bold text-emerald-600">
-                    {s.value}
-                  </p>
+                  <p className="text-2xl font-bold text-emerald-600">{s.value}</p>
                 </div>
               ))}
             </div>
@@ -79,23 +74,16 @@ export default function HomePage() {
                   <tr className="bg-gray-50">
                     <th className="text-left p-3 text-gray-400 font-normal w-36" />
                     {[
-                      { name: "sarah", flags: "🔵" },
-                      { name: "marco", flags: "" },
-                      { name: "devon", flags: "🟡🔴" },
-                      { name: "priya", flags: "" },
-                      { name: "lee", flags: "🔴" },
+                      { name: "sarah", dot: "bg-blue-400" },
+                      { name: "marco", dot: "" },
+                      { name: "devon", dot: "bg-yellow-400" },
+                      { name: "priya", dot: "" },
+                      { name: "lee", dot: "bg-red-400" },
                     ].map((a) => (
-                      <th
-                        key={a.name}
-                        className="p-3 text-gray-500 font-normal text-center"
-                      >
-                        <div className="flex flex-col items-center gap-0.5">
+                      <th key={a.name} className="p-3 text-gray-500 font-normal text-center">
+                        <div className="flex flex-col items-center gap-1">
+                          {a.dot && <span className={`w-2.5 h-2.5 rounded-full inline-block ${a.dot}`} />}
                           <span>{a.name}</span>
-                          {a.flags && (
-                            <span className="text-sm leading-none">
-                              {a.flags}
-                            </span>
-                          )}
                         </div>
                       </th>
                     ))}
@@ -106,35 +94,17 @@ export default function HomePage() {
                     {
                       label: "Code",
                       values: ["4821", "1203", "890", "654", "42"],
-                      colors: [
-                        "bg-blue-100 text-blue-800",
-                        "",
-                        "",
-                        "",
-                        "bg-red-100 text-red-800",
-                      ],
+                      colors: ["bg-blue-100 text-blue-800", "", "", "", "bg-red-100 text-red-800"],
                     },
                     {
                       label: "Tests",
                       values: ["1840", "420", "0", "280", "0"],
-                      colors: [
-                        "bg-blue-100 text-blue-800",
-                        "",
-                        "bg-red-100 text-red-800",
-                        "",
-                        "bg-red-100 text-red-800",
-                      ],
+                      colors: ["bg-blue-100 text-blue-800", "", "bg-red-100 text-red-800", "", "bg-red-100 text-red-800"],
                     },
                     {
                       label: "Config",
                       values: ["210", "88", "0", "44", "0"],
-                      colors: [
-                        "",
-                        "",
-                        "bg-red-100 text-red-800",
-                        "",
-                        "bg-red-100 text-red-800",
-                      ],
+                      colors: ["", "", "bg-red-100 text-red-800", "", "bg-red-100 text-red-800"],
                     },
                     {
                       label: "Avg lines/commit",
@@ -143,14 +113,9 @@ export default function HomePage() {
                     },
                   ].map((row) => (
                     <tr key={row.label} className="border-t border-gray-100">
-                      <td className="p-3 text-gray-500 font-medium">
-                        {row.label}
-                      </td>
+                      <td className="p-3 text-gray-500 font-medium">{row.label}</td>
                       {row.values.map((v, i) => (
-                        <td
-                          key={i}
-                          className={`p-3 text-center font-mono ${row.colors[i] || "text-gray-700"}`}
-                        >
+                        <td key={i} className={`p-3 text-center font-mono ${row.colors[i] || "text-gray-700"}`}>
                           {v}
                         </td>
                       ))}
@@ -163,13 +128,16 @@ export default function HomePage() {
             {/* Flag legend */}
             <div className="flex gap-5 text-xs text-gray-500 mb-4">
               <span className="flex items-center gap-1.5">
-                🔵 <span>Carrying the team</span>
+                <span className="w-3 h-3 rounded-sm bg-blue-200 inline-block" />
+                Carrying the team
               </span>
               <span className="flex items-center gap-1.5">
-                🔴 <span>Low contribution</span>
+                <span className="w-3 h-3 rounded-sm bg-red-200 inline-block" />
+                Low contribution
               </span>
               <span className="flex items-center gap-1.5">
-                🟡 <span>Needs review — large commits, no tests</span>
+                <span className="w-3 h-3 rounded-sm bg-yellow-300 inline-block" />
+                Needs review
               </span>
             </div>
 
@@ -183,39 +151,24 @@ export default function HomePage() {
                   {[
                     {
                       file: "lib/analyze.ts",
-                      owners: [
-                        { name: "sarah", pct: 74 },
-                        { name: "marco", pct: 26 },
-                      ],
+                      owners: [{ name: "sarah", pct: 74 }, { name: "marco", pct: 26 }],
                     },
                     {
                       file: "app/api/route.ts",
-                      owners: [
-                        { name: "devon", pct: 91 },
-                        { name: "sarah", pct: 9 },
-                      ],
+                      owners: [{ name: "devon", pct: 91 }, { name: "sarah", pct: 9 }],
                     },
                     {
                       file: "README.md",
-                      owners: [
-                        { name: "priya", pct: 88 },
-                        { name: "lee", pct: 12 },
-                      ],
+                      owners: [{ name: "priya", pct: 88 }, { name: "lee", pct: 12 }],
                     },
                   ].map((row) => (
-                    <tr
-                      key={row.file}
-                      className="border-t border-gray-100 hover:bg-gray-50"
-                    >
-                      <td className="p-2 font-mono text-gray-600 w-72">
-                        📄 {row.file}
-                      </td>
+                    <tr key={row.file} className="border-t border-gray-100 hover:bg-gray-50">
+                      <td className="p-2 font-mono text-gray-600 w-72">📄 {row.file}</td>
                       <td className="p-2">
                         <div className="flex gap-3">
                           {row.owners.map((o) => (
                             <span key={o.name} className="text-gray-600">
-                              {o.name}{" "}
-                              <span className="text-gray-400">({o.pct}%)</span>
+                              {o.name} <span className="text-gray-400">({o.pct}%)</span>
                             </span>
                           ))}
                         </div>
@@ -267,16 +220,11 @@ export default function HomePage() {
             {
               num: "06",
               title: "Automatic risk flags",
-              desc: "🔵 carrying the team · 🔴 low contribution · 🟡 needs review (huge commits, zero test coverage). Scaled to your team size.",
+              desc: "Color-coded highlighting: blue for carrying the team, red for low contribution, yellow for needs review (huge commits, zero test coverage). Scaled to your team size.",
             },
           ].map((f) => (
-            <div
-              key={f.num}
-              className="bg-white border border-gray-200 rounded-xl p-6"
-            >
-              <p className="text-3xl font-extrabold text-emerald-600 mb-3">
-                {f.num}
-              </p>
+            <div key={f.num} className="bg-white border border-gray-200 rounded-xl p-6">
+              <p className="text-3xl font-extrabold text-emerald-600 mb-3">{f.num}</p>
               <p className="text-gray-900 font-semibold mb-2">{f.title}</p>
               <p className="text-gray-500 text-xs leading-relaxed">{f.desc}</p>
             </div>
@@ -291,39 +239,34 @@ export default function HomePage() {
             How flags work
           </h2>
           <p className="text-gray-400 text-sm mb-6">
-            A contributor can carry multiple flags — someone can be both
-            low-commit 🔴 and writing huge hard-to-review changes 🟡 at the same
-            time.
+            A contributor can carry multiple flags — someone can be both low-commit and
+            writing huge hard-to-review changes at the same time.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
-                flag: "🔵",
+                color: "bg-blue-200",
                 label: "Carrying the team",
                 bg: "bg-blue-50 border-blue-200",
                 desc: "Commit count is well above the team average. This person is doing a disproportionate share of the work.",
               },
               {
-                flag: "🔴",
+                color: "bg-red-200",
                 label: "Low contribution",
                 bg: "bg-red-50 border-red-200",
                 desc: "Notably fewer commits than the rest of the team. Could mean they're blocked, less engaged, or working in a different branch.",
               },
               {
-                flag: "🟡",
+                color: "bg-yellow-300",
                 label: "Needs review",
                 bg: "bg-yellow-50 border-yellow-200",
                 desc: "Commits are unusually large (hard to review), or this contributor has written significant code with zero test coverage.",
               },
             ].map((f) => (
               <div key={f.label} className={`border rounded-lg p-4 ${f.bg}`}>
-                <p className="text-2xl mb-2">{f.flag}</p>
-                <p className="font-semibold text-gray-800 text-sm mb-1">
-                  {f.label}
-                </p>
-                <p className="text-gray-500 text-xs leading-relaxed">
-                  {f.desc}
-                </p>
+                <span className={`inline-block w-4 h-4 rounded-sm mb-2 ${f.color}`} />
+                <p className="font-semibold text-gray-800 text-sm mb-1">{f.label}</p>
+                <p className="text-gray-500 text-xs leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
