@@ -35,6 +35,7 @@ export default function AddRepoForm() {
       }
 
       setCommitCount(Array.isArray(data) ? data.length : 0)
+      console.log(data)
       setRepoUrl("")
     } catch {
       setError("Failed to fetch commits")
