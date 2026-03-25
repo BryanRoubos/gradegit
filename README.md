@@ -2,7 +2,7 @@
 
 **GitHub repository analytics — paste a repo URL, get a full breakdown of every contributor's work, automatic risk flags, file ownership, and commit patterns.**
 
-Answers the questions your team lead actually cares about: who writes tests, who owns critical files, who's carrying the work, and who needs a closer look.
+Answers the questions your teacher actually cares about: who writes tests, who owns critical files, who's carrying the work, and who needs a closer look.
 
 ## Demo
 <img width="1920" height="4601" alt="screencapture-gradegit-production-up-railway-app-dashboard-2026-03-26-00_31_11" src="https://github.com/user-attachments/assets/f7dcd99c-4398-4ad6-baf5-8cde2416eb47" />
