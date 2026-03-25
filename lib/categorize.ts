@@ -1,5 +1,23 @@
 export type ContribType = "code" | "test" | "config" | "ui" | "docs";
 
+const LOCK_FILES = new Set([
+  "package-lock.json",
+  "yarn.lock",
+  "pnpm-lock.yaml",
+  "composer.lock",
+  "Gemfile.lock",
+  "poetry.lock",
+  "Cargo.lock",
+  "packages.lock.json",
+  "go.sum",
+]);
+
+// Exported so analyze.ts can skip lock files from line counting entirely.
+export function isLockFile(filename: string): boolean {
+  const base = filename.split("/").pop() ?? filename;
+  return LOCK_FILES.has(base);
+}
+
 export function categorizeFile(filename: string): ContribType {
   const lower = filename.toLowerCase();
 
@@ -39,10 +57,9 @@ export function categorizeFile(filename: string): ContribType {
     /\.(config|rc)\.[jt]s$/.test(lower) ||
     lower.includes("dockerfile") ||
     lower.includes(".github/") ||
-    lower.startsWith(".") // dotfiles
+    lower.startsWith(".")
   )
     return "config";
 
-  // Everything else is code
   return "code";
 }
