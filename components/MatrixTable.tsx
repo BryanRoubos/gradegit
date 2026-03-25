@@ -156,7 +156,7 @@ export default function MatrixTable({ authors }: Props) {
                     </td>
                     {authors.map(a => {
                       const val = a[key]
-                      const flag = flagValue(val, values)
+                      const flag = a.flag !== "normal" ? a.flag : flagValue(val, values)
                       return (
                         <td
                           key={a.author}
