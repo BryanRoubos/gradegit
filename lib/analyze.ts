@@ -129,24 +129,24 @@ export function analyzeRepo(
   // ---- heuristics / flagging ----
   const authors = Object.values(authorMap);
 
-  const commitCounts = authors.map((a) => a.commitCount);
-  const lineCounts = authors.map((a) => a.totalLines);
+  const commitCounts = authors.map((a) => a.commitCount)
+  const lineCounts = authors.map((a) => a.totalLines)
+  const linesPerCommitValues = authors.map((a) => a.linesPerCommit)
 
-  const commitMean = mean(commitCounts);
-  const commitStd = stddev(commitCounts);
-  const lineMean = mean(lineCounts);
-  const lineStd = stddev(lineCounts);
+  const commitMean = mean(commitCounts)
+  const commitStd = stddev(commitCounts)
+  const lineMean = mean(lineCounts)
+  const lpcMean = mean(linesPerCommitValues)
+  const lpcStd = stddev(linesPerCommitValues)
+
 
   for (const stats of authors) {
     const hasNoTests = stats.byType.test === 0
-    const hugeCommits = stats.linesPerCommit > lineMean + 2 * lineStd
+    const hugeCommits = stats.linesPerCommit > lpcMean + 2 * lpcStd  // ← use lpcMean/lpcStd
   
-    // only flag attention if they have enough commits to matter
-    // AND their average commit size is suspiciously large (dumping code)
     if (hugeCommits && stats.commitCount > 2) {
       stats.flag = "attention"
     } else if (hasNoTests && stats.commitCount > 5 && stats.totalLines > lineMean) {
-      // significant contributor with zero tests — worth flagging
       stats.flag = "attention"
     } else if (stats.commitCount > commitMean + 2 * commitStd) {
       stats.flag = "above"
