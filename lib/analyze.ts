@@ -138,17 +138,22 @@ export function analyzeRepo(
   const lineStd = stddev(lineCounts);
 
   for (const stats of authors) {
-    const hasNoTests = stats.byType.test === 0;
-    const hugeCommits = stats.linesPerCommit > lineMean + 2 * lineStd;
-
-    if (hugeCommits || (hasNoTests && stats.commitCount > 5)) {
-      stats.flag = "attention";
+    const hasNoTests = stats.byType.test === 0
+    const hugeCommits = stats.linesPerCommit > lineMean + 2 * lineStd
+  
+    // only flag attention if they have enough commits to matter
+    // AND their average commit size is suspiciously large (dumping code)
+    if (hugeCommits && stats.commitCount > 2) {
+      stats.flag = "attention"
+    } else if (hasNoTests && stats.commitCount > 5 && stats.totalLines > lineMean) {
+      // significant contributor with zero tests — worth flagging
+      stats.flag = "attention"
     } else if (stats.commitCount > commitMean + 2 * commitStd) {
-      stats.flag = "above";
+      stats.flag = "above"
     } else if (stats.commitCount < commitMean - 0.5 * commitStd) {
-      stats.flag = "below";
+      stats.flag = "below"
     } else {
-      stats.flag = "normal";
+      stats.flag = "normal"
     }
   }
 
