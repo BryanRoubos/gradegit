@@ -135,12 +135,10 @@ export function analyzeRepo(
   const authors = Object.values(authorMap);
 
   const commitCounts = authors.map((a) => a.commitCount);
-  const lineCounts = authors.map((a) => a.totalLines);
   const linesPerCommitValues = authors.map((a) => a.linesPerCommit);
 
   const commitMean = mean(commitCounts);
   const commitStd = stddev(commitCounts);
-  const lineMean = mean(lineCounts);
   const lpcMean = mean(linesPerCommitValues);
   const lpcStd = stddev(linesPerCommitValues);
 
@@ -157,11 +155,13 @@ export function analyzeRepo(
     }
 
     // 🟡 Needs review: meaningful contributor with zero test coverage.
+    // Gate on commitCount only — if you've made 5+ commits and written no tests,
+    // that's worth flagging regardless of line count. The mean-lines gate was
+    // causing false negatives when one dominant contributor inflated the mean.
     const hasNoTests = stats.byType.test === 0;
     if (
       hasNoTests &&
       stats.commitCount >= 5 &&
-      stats.totalLines > lineMean &&
       !authorFlags.includes("attention")
     ) {
       authorFlags.push("attention");
