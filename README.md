@@ -85,7 +85,8 @@ npm run dev
 
 ## Live demo
 
-[gradegit.up.railway.app](https://gradegit.up.railway.app)
+
+[gradegit.up.railway.app](https://gradegit-production.up.railway.app/)
 
 > Sign in with GitHub to analyze any public repository.
 
