@@ -113,7 +113,7 @@ export default function MatrixTable({ authors }: Props) {
           </table>
         </div>
 
-        {/* Metrics matrix */}
+      {/* Metrics matrix */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -124,7 +124,24 @@ export default function MatrixTable({ authors }: Props) {
                     key={a.author}
                     className="p-2 border border-gray-200 text-center font-medium text-gray-700"
                   >
-                    {a.author}
+                    <div className="flex flex-col items-center gap-1">
+                      <span>{a.author}</span>  // ← was just this bare span before
+                      {a.flag === "attention" && (
+                        <span className="text-xs bg-yellow-200 text-yellow-900 px-1 rounded">
+                          ⚠ needs attention
+                        </span>
+                      )}
+                      {a.flag === "above" && (
+                        <span className="text-xs bg-blue-200 text-blue-900 px-1 rounded">
+                          ↑ above avg
+                        </span>
+                      )}
+                      {a.flag === "below" && (
+                        <span className="text-xs bg-red-200 text-red-900 px-1 rounded">
+                          ↓ below avg
+                        </span>
+                      )}
+                    </div>
                   </th>
                 ))}
               </tr>
