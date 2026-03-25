@@ -185,7 +185,7 @@ export default function MatrixTable({ authors }: Props) {
           </span>
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 rounded-sm bg-yellow-200 inline-block" />
-            Needs attention
+            Needs attention — no test contributions with 5+ commits, or abnormally large commits
           </span>
         </div>
       </div>
