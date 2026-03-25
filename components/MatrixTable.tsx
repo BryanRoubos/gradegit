@@ -1,25 +1,33 @@
-import { AuthorStats } from "@/lib/analyze"
+import { AuthorStats, FlagType } from "@/lib/analyze";
 
-type Flag = "above" | "below" | "attention" | "normal"
+const FLAG_EMOJI: Record<FlagType, string> = {
+  above: "🔵",
+  below: "🔴",
+  attention: "🟡",
+};
 
-const cellColor = (flag: Flag) => ({
-  above: "bg-blue-200 text-blue-900",
-  below: "bg-red-200 text-red-900",
-  attention: "bg-yellow-200 text-yellow-900",
-  normal: "bg-white",
-}[flag])
+type CellFlag = "above" | "below" | "attention" | "normal";
 
-// compute per-cell flag based on value vs mean
-function flagValue(value: number, values: number[]): Flag {
-  const mean = values.reduce((a, b) => a + b, 0) / values.length
-  const variance = values.map(v => (v - mean) ** 2).reduce((a, b) => a + b, 0) / values.length
-  const std = Math.sqrt(variance)
-  if (value > mean + 2 * std) return "above"
-  if (value < mean - 0.5 * std) return "below"
-  return "normal"
+const cellColor = (flag: CellFlag) =>
+  ({
+    above: "bg-blue-200 text-blue-900",
+    below: "bg-red-200 text-red-900",
+    attention: "bg-yellow-200 text-yellow-900",
+    normal: "bg-white",
+  })[flag];
+
+function flagValue(value: number, values: number[]): CellFlag {
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const variance =
+    values.map((v) => (v - mean) ** 2).reduce((a, b) => a + b, 0) /
+    values.length;
+  const std = Math.sqrt(variance);
+  if (value > mean + 2 * std) return "above";
+  if (value < mean - 0.5 * std) return "below";
+  return "normal";
 }
 
-type Props = { authors: AuthorStats[] }
+type Props = { authors: AuthorStats[] };
 
 const TYPES = [
   { key: "code", label: "Code" },
@@ -27,13 +35,26 @@ const TYPES = [
   { key: "config", label: "Configuration" },
   { key: "ui", label: "User interface" },
   { key: "docs", label: "Documentation" },
-] as const
+] as const;
 
 const METRICS = [
   { key: "commitCount", label: "Total commits" },
   { key: "linesPerCommit", label: "Average lines per commit" },
   { key: "totalLines", label: "Total lines changed" },
-] as const
+] as const;
+
+function AuthorHeader({ a }: { a: AuthorStats }) {
+  const emojis = a.flags.map((f) => FLAG_EMOJI[f]).join("");
+  return (
+    <div className="flex flex-col items-center gap-1">
+      {a.avatar && (
+        <img src={a.avatar} alt={a.author} className="w-6 h-6 rounded-full" />
+      )}
+      <span>{a.author}</span>
+      {emojis && <span className="text-sm leading-none">{emojis}</span>}
+    </div>
+  );
+}
 
 export default function MatrixTable({ authors }: Props) {
   return (
@@ -52,40 +73,27 @@ export default function MatrixTable({ authors }: Props) {
             <thead>
               <tr className="bg-gray-50">
                 <th className="text-left p-2 border border-gray-200 w-40" />
-                {authors.map(a => (
+                {authors.map((a) => (
                   <th
                     key={a.author}
                     className="p-2 border border-gray-200 text-center font-medium text-gray-700"
                   >
-                    <div className="flex flex-col items-center gap-1">
-                      {a.avatar && (
-                        <img
-                          src={a.avatar}
-                          alt={a.author}
-                          className="w-6 h-6 rounded-full"
-                        />
-                      )}
-                      <span>{a.author}</span>
-                      {a.flag === "attention"}
-                      {a.flag === "above" }
-                      {a.flag === "below"
-                      }
-                    </div>
+                    <AuthorHeader a={a} />
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {TYPES.map(({ key, label }) => {
-                const values = authors.map(a => a.byType[key])
+                const values = authors.map((a) => a.byType[key]);
                 return (
                   <tr key={key}>
                     <td className="p-2 border border-gray-200 font-medium text-gray-600 bg-gray-50">
                       {label}
                     </td>
-                    {authors.map(a => {
-                      const val = a.byType[key]
-                      const flag = flagValue(val, values)
+                    {authors.map((a) => {
+                      const val = a.byType[key];
+                      const flag = flagValue(val, values);
                       return (
                         <td
                           key={a.author}
@@ -93,48 +101,43 @@ export default function MatrixTable({ authors }: Props) {
                         >
                           {val}
                         </td>
-                      )
+                      );
                     })}
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>
         </div>
 
-      {/* Metrics matrix */}
+        {/* Metrics matrix */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="text-left p-2 border border-gray-200 w-40" />
-              {authors.map(a => (
-                <th
-                  key={a.author}
-                  className="p-2 border border-gray-200 text-center font-medium text-gray-700"
-                >
-                  <div className="flex flex-col items-center gap-1">
-                    {a.avatar && (
-                      <img src={a.avatar} alt={a.author} className="w-6 h-6 rounded-full" />
-                    )}
-                    <span>{a.author}</span>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="text-left p-2 border border-gray-200 w-40" />
+                {authors.map((a) => (
+                  <th
+                    key={a.author}
+                    className="p-2 border border-gray-200 text-center font-medium text-gray-700"
+                  >
+                    <AuthorHeader a={a} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
             <tbody>
-            {METRICS.map(({ key, label }) => {
-                const values = authors.map(a => a[key])
+              {METRICS.map(({ key, label }) => {
+                const values = authors.map((a) => a[key]);
                 return (
                   <tr key={key}>
                     <td className="p-2 border border-gray-200 font-medium text-gray-600 bg-gray-50">
                       {label}
                     </td>
-                    {authors.map(a => {
-                      const val = a[key]
-                      const flag = a.flag !== "normal" ? a.flag : flagValue(val, values)
-                      console.log(a.author, "flag:", a.flag, "→", flag) 
+                    {authors.map((a) => {
+                      const val = a[key];
+                      // Per-cell flag is purely statistical for that metric
+                      const flag = flagValue(val, values);
                       return (
                         <td
                           key={a.author}
@@ -142,10 +145,10 @@ export default function MatrixTable({ authors }: Props) {
                         >
                           {val}
                         </td>
-                      )
+                      );
                     })}
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>
@@ -168,5 +171,5 @@ export default function MatrixTable({ authors }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
