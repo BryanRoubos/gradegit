@@ -4,6 +4,10 @@ GitHub repository analytics dashboard — contributor breakdowns, code ownership
 
 Paste in a repo URL. See exactly who wrote what, where the work is concentrated, and who might need support.
 
+## Demo
+<img width="1920" height="4378" alt="screencapture-gradegit-production-up-railway-app-dashboard-2026-03-25-16_41_49" src="https://github.com/user-attachments/assets/cc338d69-6822-43a6-ac21-48a7c04512a9" />
+
+
 ## Why I built this
 
 When working in teams, it's hard to get an honest picture of contribution patterns. Tools like GitHub's built-in insights only show commit counts. I wanted something closer to what engineering leads actually care about: who writes tests, who owns which files, who is carrying the team.
