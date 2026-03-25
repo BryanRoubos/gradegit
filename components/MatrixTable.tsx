@@ -15,6 +15,10 @@ const cellColor = (flag: CellFlag) => ({
   normal: "bg-white",
 }[flag])
 
+// Absolute fallback: always flag linesPerCommit cells above this, even on
+// small teams where one outlier pushes the statistical threshold too high.
+const HUGE_COMMIT_ABSOLUTE = 500
+
 function flagValue(value: number, values: number[], onlyFlagHigh = false): CellFlag {
   const mean = values.reduce((a, b) => a + b, 0) / values.length
   const variance = values.map(v => (v - mean) ** 2).reduce((a, b) => a + b, 0) / values.length
@@ -71,10 +75,7 @@ export default function MatrixTable({ authors }: Props) {
               <tr className="bg-gray-50">
                 <th className="text-left p-2 border border-gray-200 w-40" />
                 {authors.map(a => (
-                  <th
-                    key={a.author}
-                    className="p-2 border border-gray-200 text-center font-medium text-gray-700"
-                  >
+                  <th key={a.author} className="p-2 border border-gray-200 text-center font-medium text-gray-700">
                     <AuthorHeader a={a} />
                   </th>
                 ))}
@@ -93,12 +94,11 @@ export default function MatrixTable({ authors }: Props) {
                       let flag: CellFlag
 
                       if (key === "test" && val === 0 && a.byType.code > 0 && a.flags.includes("attention")) {
+                        // Everyone at 0 means stats can't fire — use the author flag directly
                         flag = "attention"
                       } else {
                         flag = flagValue(val, values)
-                        // If stats alone didn't fire but the author is flagged,
-                        // surface their overall flag on the Code row so the colour
-                        // matches what the column header already shows.
+                        // If stats didn't catch it but author is flagged, surface it on Code row
                         if (flag === "normal" && key === "code") {
                           if (a.flags.includes("below")) flag = "below"
                           else if (a.flags.includes("above")) flag = "above"
@@ -106,10 +106,7 @@ export default function MatrixTable({ authors }: Props) {
                       }
 
                       return (
-                        <td
-                          key={a.author}
-                          className={`p-2 border border-gray-200 text-center ${cellColor(flag)}`}
-                        >
+                        <td key={a.author} className={`p-2 border border-gray-200 text-center ${cellColor(flag)}`}>
                           {val}
                         </td>
                       )
@@ -128,10 +125,7 @@ export default function MatrixTable({ authors }: Props) {
               <tr className="bg-gray-50">
                 <th className="text-left p-2 border border-gray-200 w-40" />
                 {authors.map(a => (
-                  <th
-                    key={a.author}
-                    className="p-2 border border-gray-200 text-center font-medium text-gray-700"
-                  >
+                  <th key={a.author} className="p-2 border border-gray-200 text-center font-medium text-gray-700">
                     <AuthorHeader a={a} />
                   </th>
                 ))}
@@ -147,12 +141,17 @@ export default function MatrixTable({ authors }: Props) {
                     </td>
                     {authors.map(a => {
                       const val = a[key]
-                      const flag = flagValue(val, values, onlyFlagHigh)
+                      let flag: CellFlag
+
+                      if (key === "linesPerCommit" && val > HUGE_COMMIT_ABSOLUTE) {
+                        // Absolute threshold: always yellow regardless of team stats
+                        flag = "attention"
+                      } else {
+                        flag = flagValue(val, values, onlyFlagHigh)
+                      }
+
                       return (
-                        <td
-                          key={a.author}
-                          className={`p-2 border border-gray-200 text-center ${cellColor(flag)}`}
-                        >
+                        <td key={a.author} className={`p-2 border border-gray-200 text-center ${cellColor(flag)}`}>
                           {val}
                         </td>
                       )
