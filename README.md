@@ -1,14 +1,15 @@
 # GradeGit
 
-**GitHub repository analytics dashboard — paste a repo URL, get a full breakdown of every contributor's work by type (code, tests, config, UI, docs), color-coded contribution matrices, file ownership percentages, and commit timeline. Built for teachers who need more than commit counts.**
+**GitHub repository analytics dashboard — paste a repo URL, get a full breakdown of every contributor's work by type (code, tests, config, UI, docs), color-coded contribution matrices, heuristic flagging, file ownership percentages, and commit timeline.**
+
+Paste in a repo URL. See exactly who wrote what, where the work is concentrated, and who might need support.
 
 ## Demo
 <img width="1920" height="4120" alt="screencapture-gradegit-production-up-railway-app-dashboard-2026-03-25-17_40_59" src="https://github.com/user-attachments/assets/9680ce8f-35ba-4933-b76a-e1665c659f65" />
 
-
 ## Why I built this
 
-When working in teams, it's hard to get an honest picture of contribution patterns. Tools like GitHub's built-in insights only show commit counts. I wanted something closer to what engineering leads actually care about: who writes tests, who owns which files, who is carrying the team.
+When working in teams, it's hard to get an honest picture of contribution patterns. Tools like GitHub's built-in insights only show commit counts. I wanted something closer to what teachers actually care about: who writes tests, who owns which files, who is carrying the team.
 
 GradeGit is that tool. It was also a project I used to go deep on data aggregation, heuristic scoring, and building a useful UI around raw API data.
 
@@ -24,9 +25,9 @@ GradeGit is that tool. It was also a project I used to go deep on data aggregati
    - **Documentation** — Markdown, RST, docs directories
 4. Per-author stats are aggregated across all contribution types
 5. Each author is flagged against the team mean and standard deviation:
-   - **Above average** — more than 2 standard deviations above the mean
-   - **Below average** — more than 0.5 standard deviations below the mean
-   - **Needs attention** — no test contributions with 5+ commits, or unusually large commit sizes
+   - 🔵 **Above average** — more than 2 standard deviations above the mean
+   - 🔴 **Below average** — more than 0.5 standard deviations below the mean
+   - 🟡 **Needs attention** — no test contributions with 5+ commits, or unusually large commit sizes
 6. Issues and pull request activity is fetched and broken down per contributor
 7. File ownership percentages are computed for every file touched
 8. Results are displayed as interactive charts and color-coded comparison matrices
@@ -58,7 +59,7 @@ The GitHub API requires one request per commit to get file diff data. 100 commit
 
 **Why prioritize GitHub login over git config name?**
 
-The same person can commit under different git config names on different machines. The GitHub login is the stable identifier, using it as the dedup key merges commits from the same account regardless of how their local git is configured.
+The same person can commit under different git config names on different machines. The GitHub login is the stable identifier — using it as the dedup key merges commits from the same account regardless of how their local git is configured.
 
 ## Getting started
 
@@ -68,6 +69,7 @@ The same person can commit under different git config names on different machine
 - A GitHub OAuth App ([create one here](https://github.com/settings/developers))
 
 ### Setup
+
 ```bash
 git clone https://github.com/BryanRoubos/gradegit.git
 cd gradegit
@@ -75,20 +77,21 @@ npm install
 ```
 
 Create `.env.local`:
+
 ```env
 GITHUB_ID=your_github_oauth_app_client_id
 GITHUB_SECRET=your_github_oauth_app_client_secret
 NEXTAUTH_SECRET=any_random_string
 NEXTAUTH_URL=http://localhost:3000
 ```
+
 ```bash
 npm run dev
 ```
 
 ## Live demo
 
-
-[gradegit.up.railway.app](https://gradegit-production.up.railway.app/)
+[gradegit-production.up.railway.app](https://gradegit-production.up.railway.app/)
 
 > Sign in with GitHub to analyze any public repository.
 
