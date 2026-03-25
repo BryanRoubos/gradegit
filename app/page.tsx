@@ -20,7 +20,7 @@ export default function HomePage() {
         </h1>
         <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-lg mx-auto">
           Paste a GitHub repo URL and get an instant breakdown of every
-          contributor — who writes tests, who owns which files, who's
+          contributor, who writes tests, who owns which files, who's
           carrying the team, and who needs a closer look.
         </p>
         <button
@@ -74,11 +74,11 @@ export default function HomePage() {
                   <tr className="bg-gray-50">
                     <th className="text-left p-3 text-gray-400 font-normal w-36" />
                     {[
-                      { name: "sarah", dot: "bg-blue-400" },
+                      { name: "sarah", dot: "" },
                       { name: "marco", dot: "" },
-                      { name: "devon", dot: "bg-yellow-400" },
+                      { name: "devon", dot: "" },
                       { name: "priya", dot: "" },
-                      { name: "lee", dot: "bg-red-400" },
+                      { name: "lee", dot: "" },
                     ].map((a) => (
                       <th key={a.name} className="p-3 text-gray-500 font-normal text-center">
                         <div className="flex flex-col items-center gap-1">
@@ -205,7 +205,7 @@ export default function HomePage() {
             {
               num: "03",
               title: "Issues & pull requests",
-              desc: "Per-author breakdown of PRs opened, merged, and closed — plus how often they add labels, descriptions, and reviewers.",
+              desc: "Per-author breakdown of PRs opened, merged, and closed, plus how often they add labels, descriptions, and reviewers.",
             },
             {
               num: "04",
@@ -215,7 +215,7 @@ export default function HomePage() {
             {
               num: "05",
               title: "File ownership",
-              desc: "Top 30 files by lines changed, with per-author percentages. Find files where one person owns 90%+ — your bus-factor risks.",
+              desc: "Top 30 files by lines changed, with per-author percentages. Find files where one person owns 90%+,   your bus-factor risks.",
             },
             {
               num: "06",
@@ -239,7 +239,7 @@ export default function HomePage() {
             How flags work
           </h2>
           <p className="text-gray-400 text-sm mb-6">
-            A contributor can carry multiple flags — someone can be both low-commit and
+            A contributor can carry multiple flags, someone can be both low-commit and
             writing huge hard-to-review changes at the same time.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
