@@ -1,40 +1,43 @@
 import { IssueStats, PRStats } from "@/lib/analyze"
 
-const FLAG_COLORS = {
-  above: "bg-blue-200 text-blue-900",
-  below: "bg-red-200 text-red-900",
-  normal: "bg-white",
-}
-
-function flagCell(value: number, values: number[]) {
+// For activity rows (total, merged, closed): high = good = blue, low = bad = red
+// For hygiene rows (without labels, without description, etc): high = bad = red, low = neutral
+function flagCell(value: number, values: number[], invertColors = false): string {
   const mean = values.reduce((a, b) => a + b, 0) / values.length
   const std = Math.sqrt(
     values.map(v => (v - mean) ** 2).reduce((a, b) => a + b, 0) / values.length
   )
-  if (value > mean + 2 * std) return FLAG_COLORS.above
-  if (value < mean - 0.5 * std) return FLAG_COLORS.below
-  return FLAG_COLORS.normal
+
+  if (invertColors) {
+    // High "without X" count = poor hygiene = red
+    if (value > mean + 0.5 * std && value > 0) return "bg-red-200 text-red-900"
+    return ""
+  }
+
+  if (value > mean + 2 * std) return "bg-blue-200 text-blue-900"
+  if (value < mean - 0.5 * std) return "bg-red-200 text-red-900"
+  return ""
 }
 
-const ISSUE_ROWS = [
-  { key: "totalIssues", label: "Total issues" },
-  { key: "closedIssues", label: "Total closed issues" },
-  { key: "withoutMilestones", label: "Total issues without milestones" },
-  { key: "withoutLabels", label: "Total issues without labels" },
-  { key: "withoutDescription", label: "Total issues without description" },
-  { key: "withoutAssignee", label: "Total issues without assignee" },
-  { key: "selfAssigned", label: "Total issues self assigned only" },
-] as const
+const ISSUE_ROWS: { key: keyof IssueStats; label: string; inverted?: boolean }[] = [
+  { key: "totalIssues",        label: "Total issues" },
+  { key: "closedIssues",       label: "Total closed issues" },
+  { key: "withoutMilestones",  label: "Total issues without milestones",  inverted: true },
+  { key: "withoutLabels",      label: "Total issues without labels",      inverted: true },
+  { key: "withoutDescription", label: "Total issues without description", inverted: true },
+  { key: "withoutAssignee",    label: "Total issues without assignee",    inverted: true },
+  { key: "selfAssigned",       label: "Total issues self assigned only" },
+]
 
-const PR_ROWS = [
-  { key: "totalPRs", label: "Total merge requests" },
-  { key: "merged", label: "Total merge requests merged" },
-  { key: "closed", label: "Total merge requests closed" },
-  { key: "withoutLabels", label: "Total merge requests without labels" },
-  { key: "withoutMilestones", label: "Total merge requests without milestones" },
-  { key: "withoutDescription", label: "Total merge requests without description" },
-  { key: "mergedBySelf", label: "Total merge requests merged by self" },
-] as const
+const PR_ROWS: { key: keyof PRStats; label: string; inverted?: boolean }[] = [
+  { key: "totalPRs",           label: "Total merge requests" },
+  { key: "merged",             label: "Total merge requests merged" },
+  { key: "closed",             label: "Total merge requests closed" },
+  { key: "withoutLabels",      label: "Total merge requests without labels",      inverted: true },
+  { key: "withoutMilestones",  label: "Total merge requests without milestones",  inverted: true },
+  { key: "withoutDescription", label: "Total merge requests without description", inverted: true },
+  { key: "mergedBySelf",       label: "Total merge requests merged by self" },
+]
 
 type Props = {
   issueStats: IssueStats[]
@@ -47,7 +50,7 @@ function MatrixSection({
   data,
 }: {
   title: string
-  rows: readonly { key: string; label: string }[]
+  rows: { key: string; label: string; inverted?: boolean }[]
   data: Record<string, any>[]
 }) {
   if (data.length === 0) return null
@@ -60,17 +63,14 @@ function MatrixSection({
           <tr className="bg-gray-50">
             <th className="text-left p-2 border border-gray-200 w-64" />
             {data.map(d => (
-              <th
-                key={d.author}
-                className="p-2 border border-gray-200 text-center font-medium text-gray-700"
-              >
+              <th key={d.author} className="p-2 border border-gray-200 text-center font-medium text-gray-700">
                 {d.author}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {rows.map(({ key, label }) => {
+          {rows.map(({ key, label, inverted }) => {
             const values = data.map(d => d[key] ?? 0)
             return (
               <tr key={key}>
@@ -82,7 +82,7 @@ function MatrixSection({
                   return (
                     <td
                       key={d.author}
-                      className={`p-2 border border-gray-200 text-center ${flagCell(val, values)}`}
+                      className={`p-2 border border-gray-200 text-center ${flagCell(val, values, inverted)}`}
                     >
                       {val}
                     </td>
@@ -109,26 +109,17 @@ export default function IssuesPRMatrix({ issueStats, prStats }: Props) {
         Only lists users that have created issues or merge requests at some point.
       </p>
 
-      <MatrixSection
-        title="Issues"
-        rows={ISSUE_ROWS}
-        data={issueStats}
-      />
-
-      <MatrixSection
-        title="Merge Requests"
-        rows={PR_ROWS}
-        data={prStats}
-      />
+      <MatrixSection title="Issues" rows={ISSUE_ROWS} data={issueStats} />
+      <MatrixSection title="Merge Requests" rows={PR_ROWS} data={prStats} />
 
       <div className="flex gap-6 mt-2 text-xs text-gray-500">
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-sm bg-red-200 inline-block" />
-          Below average (&lt;50%)
+          🔴 Low activity or poor hygiene (missing labels, descriptions)
         </span>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-sm bg-blue-200 inline-block" />
-          Above average (&gt;200%)
+          🔵 Well above average
         </span>
       </div>
     </div>
