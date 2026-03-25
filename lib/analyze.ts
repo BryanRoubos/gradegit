@@ -180,7 +180,6 @@ for (const issue of realIssues) {
   if (issue.labels?.length === 0) s.withoutLabels += 1
   if (!issue.body || issue.body.trim() === "") s.withoutDescription += 1
   if (!issue.assignee) s.withoutAssignee += 1
-  s.comments = (s.comments ?? 0) + (issue.comments ?? 0)
 }
 
 // ---- PRs ----
