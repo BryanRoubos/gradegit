@@ -159,15 +159,15 @@ export default function MatrixTable({ authors }: Props) {
         <div className="flex gap-6 mt-3 text-xs text-gray-500">
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-red-200 inline-block" />
-            🔴 Low contribution
+            Low contribution
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-blue-200 inline-block" />
-            🔵 Carrying the team
+            Carrying the team
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-yellow-300 inline-block" />
-            🟡 Needs review
+            Needs review
           </span>
         </div>
       </div>
