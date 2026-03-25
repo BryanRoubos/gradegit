@@ -90,15 +90,21 @@ export default function MatrixTable({ authors }: Props) {
                     </td>
                     {authors.map(a => {
                       const val = a.byType[key]
-                      // Tests row: highlight yellow if this contributor has the attention
-                      // flag, wrote no tests, but has meaningful code — stats alone can't
-                      // catch this because everyone might be at 0.
                       let flag: CellFlag
+
                       if (key === "test" && val === 0 && a.byType.code > 0 && a.flags.includes("attention")) {
                         flag = "attention"
                       } else {
                         flag = flagValue(val, values)
+                        // If stats alone didn't fire but the author is flagged,
+                        // surface their overall flag on the Code row so the colour
+                        // matches what the column header already shows.
+                        if (flag === "normal" && key === "code") {
+                          if (a.flags.includes("below")) flag = "below"
+                          else if (a.flags.includes("above")) flag = "above"
+                        }
                       }
+
                       return (
                         <td
                           key={a.author}
@@ -160,17 +166,17 @@ export default function MatrixTable({ authors }: Props) {
 
         {/* Legend */}
         <div className="flex gap-6 mt-3 text-xs text-gray-500">
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-red-200 inline-block" />
-            Below average (&lt;50%)
+            🔴 Low contribution
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-blue-200 inline-block" />
-            Above average (&gt;200%)
+            🔵 Carrying the team
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-yellow-300 inline-block" />
-            Needs attention
+            🟡 Needs review
           </span>
         </div>
       </div>
