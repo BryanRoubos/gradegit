@@ -90,11 +90,6 @@ export default function MatrixTable({ authors }: Props) {
                         flag = "attention"
                       } else {
                         flag = flagValue(val, values)
-                        // If stats didn't catch it but author is flagged, surface it on Code row
-                        if (flag === "normal" && key === "code") {
-                          if (a.flags.includes("below")) flag = "below"
-                          else if (a.flags.includes("above")) flag = "above"
-                        }
                       }
 
                       return (
