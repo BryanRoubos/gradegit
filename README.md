@@ -5,7 +5,8 @@
 Answers the questions your team lead actually cares about: who writes tests, who owns critical files, who's carrying the work, and who needs a closer look.
 
 ## Demo
-<img width="1920" height="4601" alt="screencapture-gradegit-production-up-railway-app-dashboard-2026-03-26-00_31_11" src="https://github.com/user-attachments/assets/dfdc4eb5-f752-4fbb-8990-ada14a437945" />
+<img width="1920" height="4601" alt="screencapture-gradegit-production-up-railway-app-dashboard-2026-03-26-00_32_52" src="https://github.com/user-attachments/assets/26b13dc0-5f74-4a6a-8606-db9c0f9ccdee" />
+
 
 
 ## Why I built this
