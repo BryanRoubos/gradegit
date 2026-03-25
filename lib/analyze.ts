@@ -1,4 +1,4 @@
-import { categorizeFile, ContribType } from "./categorize";
+import { categorizeFile, isLockFile, ContribType } from "./categorize";
 
 export type IssueStats = {
   author: string;
@@ -61,6 +61,10 @@ function mean(values: number[]): number {
   return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
+// Commits larger than this are always flagged regardless of team size.
+// Catches small teams where one outlier pushes the statistical threshold high.
+const HUGE_COMMIT_ABSOLUTE = 500;
+
 // ---- main ----
 
 export function analyzeRepo(
@@ -77,7 +81,6 @@ export function analyzeRepo(
     const login = detail.author?.login;
     const name = detail.commit?.author?.name ?? "Unknown";
     const authorKey = login ?? name;
-
     const avatar = detail.author?.avatar_url;
 
     const date = detail.commit?.author?.date?.slice(0, 10);
@@ -101,6 +104,10 @@ export function analyzeRepo(
 
     const files: any[] = detail.files ?? [];
     for (const file of files) {
+      // Skip auto-generated lock files — they massively inflate linesPerCommit
+      // and Config counts without reflecting any real work.
+      if (isLockFile(file.filename)) continue;
+
       const type = categorizeFile(file.filename);
       const lines = (file.additions ?? 0) + (file.deletions ?? 0);
 
@@ -115,7 +122,7 @@ export function analyzeRepo(
     }
   }
 
-  // linesPerCommit
+  // linesPerCommit — lock files already excluded so this reflects real work
   for (const stats of Object.values(authorMap)) {
     stats.linesPerCommit =
       stats.commitCount > 0
@@ -124,7 +131,7 @@ export function analyzeRepo(
   }
 
   // ---- heuristics / flagging ----
-  // Each check is independent — an author can have multiple flags.
+  // Each check is independent — an author can carry multiple flags.
   const authors = Object.values(authorMap);
 
   const commitCounts = authors.map((a) => a.commitCount);
@@ -140,13 +147,16 @@ export function analyzeRepo(
   for (const stats of authors) {
     const authorFlags: FlagType[] = [];
 
-    // 🟡 Attention: commits are unusually large (hard to review)
-    const hugeCommits = stats.linesPerCommit > lpcMean + 2 * lpcStd;
+    // 🟡 Needs review: commits are unusually large (hard to review).
+    // Two checks: statistical (mean + 2σ) OR absolute fallback.
+    const hugeCommits =
+      stats.linesPerCommit > lpcMean + 2 * lpcStd ||
+      stats.linesPerCommit > HUGE_COMMIT_ABSOLUTE;
     if (hugeCommits) {
       authorFlags.push("attention");
     }
 
-    // 🟡 Attention: meaningful contributor with zero test coverage
+    // 🟡 Needs review: meaningful contributor with zero test coverage.
     const hasNoTests = stats.byType.test === 0;
     if (
       hasNoTests &&
@@ -157,12 +167,12 @@ export function analyzeRepo(
       authorFlags.push("attention");
     }
 
-    // 🔵 Above average: carrying significantly more than their share
+    // 🔵 Carrying the team: commit count well above team average.
     if (stats.commitCount > commitMean + 2 * commitStd) {
       authorFlags.push("above");
     }
 
-    // 🔴 Below average: notably fewer commits than the team
+    // 🔴 Low contribution: notably fewer commits than the team.
     if (stats.commitCount < commitMean - 0.5 * commitStd) {
       authorFlags.push("below");
     }
