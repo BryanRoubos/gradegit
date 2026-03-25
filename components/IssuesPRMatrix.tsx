@@ -115,11 +115,11 @@ export default function IssuesPRMatrix({ issueStats, prStats }: Props) {
       <div className="flex gap-6 mt-2 text-xs text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-sm bg-red-200 inline-block" />
-          🔴 Low activity or poor hygiene (missing labels, descriptions)
+          Low activity or poor hygiene (missing labels, descriptions)
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-sm bg-blue-200 inline-block" />
-          🔵 Well above average
+          Well above average
         </span>
       </div>
     </div>
