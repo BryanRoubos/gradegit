@@ -9,7 +9,7 @@ export default async function Dashboard() {
   if (!session) redirect("/")
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <AddRepoForm />
     </div>

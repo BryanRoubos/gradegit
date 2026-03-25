@@ -6,14 +6,14 @@ export default function Header() {
   const { data: session } = useSession()
 
   return (
-    <header className="flex items-center justify-between px-8 py-5 border-b border-white/5 bg-zinc-950">
-      <span className="text-lg font-bold tracking-tight text-white">GradeGit</span>
+    <header className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-white">
+      <span className="text-lg font-bold tracking-tight text-gray-900">GradeGit</span>
       {session ? (
         <div className="flex items-center gap-4">
-          <span className="text-sm text-white/50">{session.user?.name}</span>
+          <span className="text-sm text-gray-500">{session.user?.name}</span>
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="text-sm text-white/40 hover:text-white/80 transition-colors underline"
+            className="text-sm text-gray-400 hover:text-gray-900 transition-colors underline"
           >
             Sign out
           </button>
@@ -21,7 +21,7 @@ export default function Header() {
       ) : (
         <button
           onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-          className="bg-emerald-400 text-zinc-950 text-sm font-semibold px-4 py-2 rounded hover:bg-emerald-300 transition-colors"
+          className="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-gray-700 transition-colors"
         >
           Sign in with GitHub
         </button>
