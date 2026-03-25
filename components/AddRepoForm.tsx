@@ -1,82 +1,131 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
+import { RepoAnalysis } from "@/lib/analyze";
+import ContribBarChart from "@/components/charts/ContribBarChart";
+import CommitTimeline from "@/components/charts/CommitTimeline";
+import MatrixTable from "@/components/MatrixTable";
+import FileContribTable from "@/components/FileContribTable";
+import IssuesPRMatrix from "@/components/IssuesPRMatrix"
+
 
 export default function AddRepoForm() {
-  const [repoUrl, setRepoUrl] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [commitCount, setCommitCount] = useState<number | null>(null)
+  const [repoUrl, setRepoUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<RepoAnalysis | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError(null)
-    setCommitCount(null)
+    e.preventDefault();
+    setError(null);
+    setAnalysis(null);
 
-    const trimmed = repoUrl.trim()
+    const trimmed = repoUrl.trim();
     if (!trimmed) {
-      setError("Enter a repository URL")
-      return
+      setError("Enter a repository URL");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await fetch("/api/repo/commits", {
+      const res = await fetch("/api/repo/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ repoUrl: trimmed }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Failed to fetch commits")
-        return
+        setError(data.error ?? "Analysis failed");
+        return;
       }
 
-      setCommitCount(Array.isArray(data) ? data.length : 0)
-      console.log(data)
-      setRepoUrl("")
+      setAnalysis(data);
+      setRepoUrl("");
     } catch {
-      setError("Failed to fetch commits")
+      setError("Analysis failed");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div>
-      <h1>Add Repository</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="p-6 max-w-7xl mx-auto">
+      <form onSubmit={handleSubmit} className="flex gap-2 mb-8">
         <input
           type="text"
-          placeholder="Repository URL (e.g. owner/repo or https://github.com/owner/repo)"
+          placeholder="owner/repo or https://github.com/owner/repo"
           value={repoUrl}
           onChange={(e) => setRepoUrl(e.target.value)}
           disabled={loading}
-          className="rounded border border-slate-300 px-3 py-2"
-          aria-label="Repository URL"
+          className="flex-1 rounded border border-slate-300 px-3 py-2"
         />
         <button
           type="submit"
           disabled={loading}
-          className="ml-2 rounded bg-slate-800 px-4 py-2 text-white hover:bg-slate-700 disabled:opacity-50"
-          aria-label="Add repository"
+          className="rounded bg-slate-800 px-4 py-2 text-white hover:bg-slate-700 disabled:opacity-50"
         >
-          {loading ? "Loading..." : "Add"}
+          {loading ? "Analyzing..." : "Analyze"}
         </button>
       </form>
+
       {error && (
-        <p className="mt-2 text-red-600" role="alert">
+        <p className="text-red-600 mb-4" role="alert">
           {error}
         </p>
       )}
-      {commitCount !== null && (
-        <p className="mt-2 text-green-600">
-          Fetched {commitCount} commits
+
+      {loading && (
+        <p className="text-gray-500">
+          Fetching commit details, this may take a moment...
         </p>
       )}
-    </div>
-  )
-}
 
+      {analysis && (
+        <div className="flex flex-col gap-8">
+          {/* summary bar */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Total Commits</p>
+              <p className="text-2xl font-bold">{analysis.totalCommits}</p>
+            </div>
+            <div className="bg-white rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Contributors</p>
+              <p className="text-2xl font-bold">{analysis.authors.length}</p>
+            </div>
+            <div className="bg-white rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Files Touched</p>
+              <p className="text-2xl font-bold">
+                {Object.keys(analysis.fileContributions).length}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <ContribBarChart authors={analysis.authors} />
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <MatrixTable authors={analysis.authors} />
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <IssuesPRMatrix
+              issueStats={analysis.issueStats}
+              prStats={analysis.prStats}
+            />
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <CommitTimeline timeline={analysis.commitTimeline} />
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <FileContribTable fileContributions={analysis.fileContributions} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

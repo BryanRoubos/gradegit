@@ -1,18 +1,15 @@
 "use client"
 
-import { signIn, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
 
-const SignOutButton = () => (
-    <div>
-        <button
+export default function SignOutButton() {
+  return (
+    <button
       type="button"
       onClick={() => signOut({ callbackUrl: "/" })}
-      className="rounded bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
-      aria-label="Sign out"
+      className="text-sm text-gray-500 hover:text-gray-900 underline"
     >
-        Sign Out
+      Sign out
     </button>
-    </div>
-)
-
-export default SignOutButton;
+  )
+}

@@ -1,10 +1,11 @@
-import SignInButton from "@/components/SignInButton";
+import AddRepoForm from "@/components/AddRepoForm";
+import Header from "@/components/Header";
 
-export default function Home() {
+export default function Dashboard() {
   return (
-    <main>
-      <h1>GradeGit</h1>
-      <SignInButton />
-    </main>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <AddRepoForm />
+    </div>
   );
 }
