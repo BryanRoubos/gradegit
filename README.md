@@ -1,6 +1,6 @@
 # GradeGit
 
-GitHub repository analytics dashboard — contributor breakdowns, code ownership, and collaboration patterns in one view.
+**GitHub repository analytics dashboard — contributor breakdowns, code ownership, and collaboration patterns in one view.**
 
 Paste in a repo URL. See exactly who wrote what, where the work is concentrated, and who might need support.
 
