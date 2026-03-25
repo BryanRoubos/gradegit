@@ -1,11 +1,5 @@
 import { AuthorStats, FlagType } from "@/lib/analyze"
 
-const FLAG_EMOJI: Record<FlagType, string> = {
-  above: "🔵",
-  below: "🔴",
-  attention: "🟡",
-}
-
 type CellFlag = "above" | "below" | "attention" | "normal"
 
 const cellColor = (flag: CellFlag) => ({
@@ -45,14 +39,12 @@ const METRICS = [
 ] as const
 
 function AuthorHeader({ a }: { a: AuthorStats }) {
-  const emojis = a.flags.map(f => FLAG_EMOJI[f]).join("")
   return (
     <div className="flex flex-col items-center gap-1">
       {a.avatar && (
         <img src={a.avatar} alt={a.author} className="w-6 h-6 rounded-full" />
       )}
       <span>{a.author}</span>
-      {emojis && <span className="text-sm leading-none">{emojis}</span>}
     </div>
   )
 }
