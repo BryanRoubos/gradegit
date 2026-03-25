@@ -125,7 +125,7 @@ export default function MatrixTable({ authors }: Props) {
                     className="p-2 border border-gray-200 text-center font-medium text-gray-700"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <span>{a.author}</span>  // ← was just this bare span before
+                      <span>{a.author}</span> 
                       {a.flag === "attention" && (
                         <span className="text-xs bg-yellow-200 text-yellow-900 px-1 rounded">
                           ⚠ needs attention
