@@ -66,6 +66,21 @@ export default function MatrixTable({ authors }: Props) {
                         />
                       )}
                       <span>{a.author}</span>
+                      {a.flag === "attention" && (
+                        <span className="text-xs bg-yellow-200 text-yellow-900 px-1 rounded">
+                          ⚠ needs attention
+                        </span>
+                      )}
+                      {a.flag === "above" && (
+                        <span className="text-xs bg-blue-200 text-blue-900 px-1 rounded">
+                          ↑ above avg
+                        </span>
+                      )}
+                      {a.flag === "below" && (
+                        <span className="text-xs bg-red-200 text-red-900 px-1 rounded">
+                          ↓ below avg
+                        </span>
+                      )}
                     </div>
                   </th>
                 ))}
