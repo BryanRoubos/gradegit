@@ -1,4 +1,13 @@
-const SKIP = [".pyc", ".png", ".jpg", ".svg", ".ico", ".webp"]
+import { isLockFile } from "@/lib/categorize"
+
+// Binary and generated files that add noise to the ownership table
+const SKIP_EXTENSIONS = [".pyc", ".png", ".jpg", ".svg", ".ico", ".webp"]
+
+function shouldSkip(file: string): boolean {
+  if (SKIP_EXTENSIONS.some(ext => file.endsWith(ext))) return true
+  if (isLockFile(file)) return true
+  return false
+}
 
 function FileIcon({ name }: { name: string }) {
   const isFolder = !name.includes(".")
@@ -15,7 +24,7 @@ type Props = {
 
 export default function FileContribTable({ fileContributions }: Props) {
   const sorted = Object.entries(fileContributions)
-    .filter(([file]) => !SKIP.some(ext => file.endsWith(ext)))
+    .filter(([file]) => !shouldSkip(file))
     .sort(([, a], [, b]) => {
       const totalA = Object.values(a).reduce((x, y) => x + y, 0)
       const totalB = Object.values(b).reduce((x, y) => x + y, 0)
