@@ -1,6 +1,6 @@
 # GradeGit
 
-**GitHub repository analytics — paste a repo URL, get a full breakdown of every contributor's work, automatic risk flags, file ownership, and commit patterns.**
+**GitHub repository analytics - paste a repo URL, get a full breakdown of every contributor's work, automatic risk flags, file ownership, and commit patterns.**
 
 Answers the questions your teacher actually cares about: who writes tests, who owns critical files, who's carrying the work, and who needs a closer look.
 
